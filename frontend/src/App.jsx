@@ -5,6 +5,8 @@ import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import Results from './pages/Results'; 
 import ExamPage from './pages/ExamPage';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminResults from './pages/AdminResults';
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -50,6 +52,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/results" element={<Results />} />
         <Route path="/exam/:id" element={<ExamPage />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/results" element={<AdminResults />} />
       </Routes>
     </Router>
   );

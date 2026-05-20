@@ -18,3 +18,14 @@ export const submitExam = (payload) =>
 
 export const getResults = (userId) =>
   api.get(`/exams/results/${userId}`).then((response) => response.data);
+
+
+
+export const createExam = (payload) =>
+  api.post('/exams', payload).then((response) => response.data);
+
+export const getAllResults = (userId) =>
+  api.get(`/exams/results/${userId}`).then((response) => response.data);
+
+export const getQuestionBank = () =>
+  api.get('/questions').then((response) => response.data);
