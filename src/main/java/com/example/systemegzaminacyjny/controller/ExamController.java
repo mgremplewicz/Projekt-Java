@@ -33,9 +33,7 @@ public class ExamController
 
     @GetMapping
     public List<ExamView> getAllExams() {
-        return examService.getAllExams().stream()
-                .map(ExamView::new)
-                .toList();
+        return examService.getAllExams().stream().map(ExamView::new).toList();
     }
 
     @GetMapping("/{id}")
