@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface AttemptRepository extends JpaRepository<Attempt, Long>
 {
-    List<Attempt> findByUserIdOrderBySubmittedAtDesc(Long userId);
+    List<Attempt> findAllByUserIdOrderBySubmittedAtDesc(Long userId);
 }

@@ -30,8 +30,6 @@ public class GradingService
     }
 
     public int calculateMaxScore(Exam exam) {
-        return exam.getQuestionsList().stream()
-                .mapToInt(Question::getPoints)
-                .sum();
+        return exam.getQuestionsList().stream().mapToInt(Question::getPoints).sum();
     }
 }

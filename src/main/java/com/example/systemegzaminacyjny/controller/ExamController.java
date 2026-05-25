@@ -66,7 +66,7 @@ public class ExamController
 
     @GetMapping("/results/{userId}")
     public List<ResultResponse> getResults(@PathVariable Long userId) {
-        return attemptRepository.findByUserIdOrderBySubmittedAtDesc(userId).stream()
+        return attemptRepository.findAllByUserIdOrderBySubmittedAtDesc(userId).stream()
                 .map(attempt -> {
                     Exam exam = examRepository.findById(attempt.getExamId()).orElseThrow();
                     return new ResultResponse(attempt, exam);

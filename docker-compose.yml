@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16
-    container_name: system-egzaminacyjny-postgres
+    container_name: system-egzaminacjyny
     environment:
       POSTGRES_DB: system_egzaminacyjny
       POSTGRES_USER: egzaminy

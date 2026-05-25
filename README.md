@@ -6,6 +6,7 @@
 
    ```bash
    docker compose up -d postgres
+   docker compose down -v
    ```
 
 2. Uruchom backend:
