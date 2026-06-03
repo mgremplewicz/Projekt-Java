@@ -19,9 +19,7 @@ function AdminResults() {
     }
 
     if (typeof apiModule.getAllResults === 'function') {
-      const userId = authUser.id || 1;
-
-      apiModule.getAllResults(userId)
+      apiModule.getAllResults()
         .then((data) => {
           setAllResults(Array.isArray(data) ? data : []);
         })

@@ -63,7 +63,7 @@ function AdminDashboard() {
     const newExam = {
       title: title,
       durationMinutes: Number(duration),
-      questionsList: questionBank.filter(q => selectedQuestions.includes(q.id))
+      questionIds: selectedQuestions
     };
 
     try {

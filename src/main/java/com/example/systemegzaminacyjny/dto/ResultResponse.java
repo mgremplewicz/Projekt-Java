@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class ResultResponse {
     private final Long id;
+    private final String username;
     private final String title;
     private final LocalDateTime submittedAt;
     private final int score;
@@ -17,7 +18,12 @@ public class ResultResponse {
     private final String status;
 
     public ResultResponse(Attempt attempt, Exam exam) {
+        this(attempt, exam, null);
+    }
+
+    public ResultResponse(Attempt attempt, Exam exam, String username) {
         this.id = attempt.getId();
+        this.username = username;
         this.title = exam.getTitle();
         this.submittedAt = attempt.getSubmittedAt();
         this.score = attempt.getScore();

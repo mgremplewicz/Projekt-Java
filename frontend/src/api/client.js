@@ -24,8 +24,8 @@ export const getResults = (userId) =>
 export const createExam = (payload) =>
   api.post('/exams', payload).then((response) => response.data);
 
-export const getAllResults = (userId) =>
-  api.get(`/exams/results/${userId}`).then((response) => response.data);
+export const getAllResults = () =>
+  api.get('/exams/results').then((response) => response.data);
 
 export const getQuestionBank = () =>
   api.get('/questions').then((response) => response.data);

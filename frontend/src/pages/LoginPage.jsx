@@ -23,7 +23,7 @@ function LoginPage() {
       const user = await loginRequest(login, password);
       localStorage.setItem('authUser', JSON.stringify(user));
       localStorage.setItem('userLogin', user.username);
-      navigate('/dashboard');
+      navigate(user.role === 'NAUCZYCIEL' ? '/admin/dashboard' : '/dashboard');
     } catch {
       setError('Nieprawidłowy login lub hasło.');
     } finally {
