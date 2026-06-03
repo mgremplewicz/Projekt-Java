@@ -1,13 +1,16 @@
 package com.example.systemegzaminacyjny.controller;
 
+import com.example.systemegzaminacyjny.dto.CreateExamRequest;
 import com.example.systemegzaminacyjny.dto.ExamSubmission;
 import com.example.systemegzaminacyjny.dto.ExamView;
 import com.example.systemegzaminacyjny.dto.ResultResponse;
 import com.example.systemegzaminacyjny.dto.SubmissionResult;
 import com.example.systemegzaminacyjny.model.Attempt;
 import com.example.systemegzaminacyjny.model.Exam;
+import com.example.systemegzaminacyjny.model.User;
 import com.example.systemegzaminacyjny.repository.AttemptRepository;
 import com.example.systemegzaminacyjny.repository.ExamRepository;
+import com.example.systemegzaminacyjny.repository.UserRepository;
 import com.example.systemegzaminacyjny.service.ExamService;
 import com.example.systemegzaminacyjny.service.GradingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,8 @@ public class ExamController
     private ExamRepository examRepository;
     @Autowired
     private AttemptRepository attemptRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping
     public List<ExamView> getAllExams() {
@@ -42,8 +47,8 @@ public class ExamController
     }
 
     @PostMapping
-    public Exam createExam(@RequestBody Exam exam) {
-        return examService.createExam(exam);
+    public ExamView createExam(@RequestBody CreateExamRequest request) {
+        return new ExamView(examService.createExam(request));
     }
 
     @PostMapping("/submit")
@@ -70,6 +75,19 @@ public class ExamController
                 .map(attempt -> {
                     Exam exam = examRepository.findById(attempt.getExamId()).orElseThrow();
                     return new ResultResponse(attempt, exam);
+                })
+                .toList();
+    }
+
+    @GetMapping("/results")
+    public List<ResultResponse> getAllResults() {
+        return attemptRepository.findAllByOrderBySubmittedAtDesc().stream()
+                .map(attempt -> {
+                    Exam exam = examRepository.findById(attempt.getExamId()).orElseThrow();
+                    String username = userRepository.findById(attempt.getUserId())
+                            .map(User::getUsername)
+                            .orElse("Nieznany");
+                    return new ResultResponse(attempt, exam, username);
                 })
                 .toList();
     }

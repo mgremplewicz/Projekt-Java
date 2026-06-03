@@ -6,7 +6,6 @@
 
    ```bash
    docker compose up -d postgres
-   docker compose down -v
    ```
 
 2. Uruchom backend:
@@ -23,12 +22,12 @@
    npm run dev
    ```
 
-Frontend dziala pod adresem `http://localhost:5173`, a backend pod `http://localhost:8080`.
+Frontend dziala pod adresem `http://localhost:5173`
 
 ## Konta testowe
 
-- `uczen` / `uczen123`
-- `nauczyciel` / `nauczyciel123`
+- `4gremplewicz` / `12345`
+- `4bosak` / `12345`
 
 ## Baza danych
 
@@ -37,5 +36,13 @@ Domyslna konfiguracja PostgreSQL:
 - baza: `system_egzaminacyjny`
 - uzytkownik: `egzaminy`
 - haslo: `egzaminy`
+
+Zeby wejsc do bazy w dockerze w Exec i wywsitelic tabele:
+
+   ```bash
+   /usr/bin/psql -h localhost -U egzaminy -d system_egzaminacyjny
+   \dt -- pokazuje liste tabeli
+   SELECT * FROM (tutaj nazwa tabeli)
+   ```
 
 Po starcie backend tworzy podstawowe dane: dwoch uzytkownikow, pytania oraz egzamin probny.
