@@ -84,6 +84,11 @@ function AdminResults() {
               <User size={18} />
             </div>
             <span>{userLogin}</span>
+            {authUser?.role && (
+              <span className="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                {authUser.role}
+              </span>
+            )}
           </div>
           <button
             onClick={handleLogout}

@@ -11,9 +11,17 @@ function AdminDashboard() {
   const [publishMessage, setPublishMessage] = useState('');
   
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showQuestionModal, setShowQuestionModal] = useState(false);
+  
   const [questionBank, setQuestionBank] = useState([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
   const [questionsError, setQuestionsError] = useState('');
+
+  const [newQuestionContent, setNewQuestionContent] = useState('');
+  const [newQuestionPoints, setNewQuestionPoints] = useState(1);
+  const [newQuestionOptions, setNewQuestionOptions] = useState(['', '', '', '']);
+  const [newQuestionCorrect, setNewQuestionCorrect] = useState('');
+  const [questionCreateMessage, setQuestionCreateMessage] = useState('');
 
   const [authUser] = useState(() => JSON.parse(localStorage.getItem('authUser') || 'null'));
   const userLogin = authUser?.username || localStorage.getItem('userLogin') || 'Administrator';
@@ -57,6 +65,56 @@ function AdminDashboard() {
     .filter(q => selectedQuestions.includes(q.id))
     .reduce((sum, q) => sum + (q.points || 0), 0);
 
+  const handleCreateQuestion = async (e) => {
+    e.preventDefault();
+    setQuestionCreateMessage('');
+
+    if (!newQuestionContent.trim()) {
+      setQuestionCreateMessage('⚠️ Wpisz treść pytania.');
+      return;
+    }
+    if (newQuestionOptions.some(opt => !opt.trim())) {
+      setQuestionCreateMessage('⚠️ Uzupełnij wszystkie 4 opcje.');
+      return;
+    }
+    if (!newQuestionCorrect) {
+      setQuestionCreateMessage('⚠️ Wybierz poprawną odpowiedź.');
+      return;
+    }
+
+    const newQuestionData = {
+      content: newQuestionContent,
+      points: Number(newQuestionPoints),
+      options: newQuestionOptions,
+      correct: newQuestionCorrect
+    };
+
+    try {
+      const savedQuestion = await apiModule.createQuestion(newQuestionData);
+      
+      setQuestionBank(prev => [savedQuestion, ...prev]);
+      setSelectedQuestions(prev => [...prev, savedQuestion.id]);
+
+      setNewQuestionContent('');
+      setNewQuestionPoints(1);
+      setNewQuestionOptions(['', '', '', '']);
+      setNewQuestionCorrect('');
+      setShowQuestionModal(false);
+    } catch (error) {
+      console.error(error);
+      setQuestionCreateMessage('❌ Nie udało się zapisać pytania.');
+    }
+  };
+
+  const handleOptionChange = (index, value) => {
+    const updatedOptions = [...newQuestionOptions];
+    updatedOptions[index] = value;
+    setNewQuestionOptions(updatedOptions);
+    if (newQuestionCorrect === newQuestionOptions[index]) {
+      setNewQuestionCorrect(value);
+    }
+  };
+
   const handlePublish = async () => {
     setShowConfirmModal(false);
 
@@ -96,41 +154,6 @@ function AdminDashboard() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500 relative">
       
-      {showConfirmModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <button
-            aria-label="Zamknij potwierdzenie"
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-            onClick={() => setShowConfirmModal(false)}
-          />
-          <div className="relative bg-white dark:bg-slate-800 w-full max-w-md p-8 rounded-lg shadow-2xl border dark:border-slate-700 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 text-orange-500 rounded-full flex items-center justify-center mb-6">
-                <AlertTriangle size={32} />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Opublikować egzamin?</h3>
-              <p className="text-gray-500 dark:text-gray-400 mb-8">
-                Czy na pewno chcesz opublikować egzamin <span className="font-bold text-blue-600 dark:text-blue-400">"{title}"</span>?
-              </p>
-              <div className="flex w-full gap-4">
-                <button
-                  onClick={() => setShowConfirmModal(false)}
-                  className="flex-1 px-6 py-3 rounded-lg font-bold text-gray-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-                >
-                  Wróć
-                </button>
-                <button
-                  onClick={handlePublish}
-                  className="flex-1 px-6 py-3 rounded-lg font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg transition-all cursor-pointer"
-                >
-                  Tak, opublikuj
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       <nav className="h-16 bg-white dark:bg-slate-900 border-b dark:border-slate-800 px-6 flex justify-between items-center sticky top-0 z-40 shadow-sm">
         <div className="flex items-center gap-8">
           <div className="text-xl font-bold text-blue-600 dark:text-blue-400">Egzaminy Online</div>
@@ -150,6 +173,11 @@ function AdminDashboard() {
               <User size={18} />
             </div>
             <span>{userLogin}</span>
+            {authUser?.role && (
+              <span className="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                {authUser.role}
+              </span>
+            )}
           </div>
           <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:text-red-600 cursor-pointer font-bold mr-16">
             <LogOut size={18} /> <span className="hidden sm:inline">Wyloguj</span>
@@ -182,13 +210,23 @@ function AdminDashboard() {
             </div>
 
             <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">
-                  Wybierz pytania
-                </label>
-                <span className="text-xs font-bold px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
-                  Wybrano: {selectedQuestions.length}
-                </span>
+              <div className="flex justify-between items-center bg-slate-100 dark:bg-slate-900 p-3 rounded-xl border dark:border-slate-800">
+                <div className="space-y-1">
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Wybierz pytania z bazy
+                  </label>
+                  <div className="text-[11px] font-bold text-blue-600 dark:text-blue-400">
+                    Wybrano: {selectedQuestions.length}
+                  </div>
+                </div>
+  
+                <button
+                  type="button"
+                  onClick={() => { setQuestionCreateMessage(''); setShowQuestionModal(true); }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-md transition-all active:scale-95 cursor-pointer"
+                >
+                  + Utwórz nowe pytanie
+                </button>
               </div>
               
               {loadingQuestions && <div className="animate-pulse py-4">Pobieranie pytań...</div>}
@@ -217,9 +255,7 @@ function AdminDashboard() {
                       {q.options && q.options.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">
                           {q.options.map((opt, i) => {
-
                             const isCorrect = q.correct && opt === q.correct;
-                            
                             return (
                               <span 
                                 key={i} 
@@ -269,6 +305,141 @@ function AdminDashboard() {
           </div>
         </div>
       </div>
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <button
+            aria-label="Zamknij potwierdzenie"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            onClick={() => setShowConfirmModal(false)}
+          />
+          <div className="relative bg-white dark:bg-slate-800 w-full max-w-md p-8 rounded-lg shadow-2xl border dark:border-slate-700 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 text-orange-500 rounded-full flex items-center justify-center mb-6">
+                <AlertTriangle size={32} />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Opublikować egzamin?</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-8">
+                Czy na pewno chcesz opublikować egzamin <span className="font-bold text-blue-600 dark:text-blue-400">"{title}"</span>?
+              </p>
+              <div className="flex w-full gap-4">
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  className="flex-1 px-6 py-3 rounded-lg font-bold text-gray-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                >
+                  Wróć
+                </button>
+                <button
+                  onClick={handlePublish}
+                  className="flex-1 px-6 py-3 rounded-lg font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg transition-all cursor-pointer"
+                >
+                  Tak, opublikuj
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showQuestionModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <button
+            aria-label="Zamknij kreator"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            onClick={() => setShowQuestionModal(false)}
+          />
+          <div className="relative bg-white dark:bg-slate-800 w-full max-w-lg p-6 rounded-xl shadow-2xl border dark:border-slate-700 animate-in fade-in zoom-in-95 duration-200 space-y-4">
+            <div className="flex justify-between items-center border-b dark:border-slate-700 pb-3">
+              <h3 className="text-lg font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                Dodaj nowe pytanie
+              </h3>
+              <button 
+                onClick={() => setShowQuestionModal(false)}
+                className="text-gray-400 hover:text-gray-600 text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-400 uppercase">Treść pytania</label>
+              <input
+                type="text"
+                value={newQuestionContent}
+                onChange={(e) => setNewQuestionContent(e.target.value)}
+                placeholder="np. Ile to 5 * 5?"
+                className="w-full p-3 text-sm border dark:border-slate-600 rounded-lg bg-transparent outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-white"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-400 uppercase block mb-1">
+                Opcje odpowiedzi (zaznacz kropką właściwą)
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {newQuestionOptions.map((option, idx) => (
+                  <div key={idx} className="flex items-center gap-2 p-2 rounded-lg border dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                    <input
+                      type="radio"
+                      name="correctAnswer"
+                      checked={newQuestionCorrect === option && option !== ''}
+                      onChange={() => setNewQuestionCorrect(option)}
+                      disabled={!option.trim()}
+                      className="w-4 h-4 text-blue-600 focus:ring-blue-500 accent-green-600 cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      value={option}
+                      onChange={(e) => handleOptionChange(idx, e.target.value)}
+                      placeholder={`Opcja ${String.fromCharCode(65 + idx)}...`}
+                      className="w-full p-1.5 text-xs bg-transparent outline-none text-gray-800 dark:text-white"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-2 border-t dark:border-slate-700">
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-bold text-gray-400 uppercase">Punkty:</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={newQuestionPoints}
+                  onChange={(e) => setNewQuestionPoints(e.target.value)}
+                  className="w-16 p-2 text-sm border dark:border-slate-600 rounded-lg bg-transparent text-center outline-none text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowQuestionModal(false)}
+                  className="px-4 py-2.5 text-xs font-bold text-gray-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
+                >
+                  Anuluj
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCreateQuestion}
+                  className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow transition-all active:scale-95 cursor-pointer"
+                >
+                  Zapisz w bazie
+                </button>
+              </div>
+            </div>
+
+            {questionCreateMessage && (
+              <div className={`p-2 rounded-lg text-[11px] font-medium text-center ${
+                questionCreateMessage.includes('⚠️') 
+                  ? 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400'
+                  : 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400'
+              }`}>
+                {questionCreateMessage}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

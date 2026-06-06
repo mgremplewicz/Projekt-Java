@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { Sun, Moon } from 'lucide-react';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
@@ -7,6 +7,33 @@ import Results from './pages/Results';
 import ExamPage from './pages/ExamPage';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminResults from './pages/AdminResults';
+
+function AdminRoute() {
+  const authUser = JSON.parse(localStorage.getItem('authUser') || 'null');
+
+  if (!authUser) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (authUser.role !== 'NAUCZYCIEL') {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <Outlet />;
+}
+
+function StudentRoute() {
+  const authUser = JSON.parse(localStorage.getItem('authUser') || 'null');
+
+  if (!authUser) {
+    return <Navigate to="/" replace />;
+  }
+  if (authUser.role === 'NAUCZYCIEL') {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
+  return <Outlet />;
+}
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -49,11 +76,16 @@ function App() {
 
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/results" element={<Results />} />
-        <Route path="/exam/:id" element={<ExamPage />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/results" element={<AdminResults />} />
+        <Route element={<StudentRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/results" element={<Results />} />
+          <Route path="/exam/:id" element={<ExamPage />} />
+        </Route>
+        <Route element={<AdminRoute />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/results" element={<AdminResults />} />
+        </Route>
+        
       </Routes>
     </Router>
   );

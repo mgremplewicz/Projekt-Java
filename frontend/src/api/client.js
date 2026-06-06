@@ -29,3 +29,18 @@ export const getAllResults = () =>
 
 export const getQuestionBank = () =>
   api.get('/questions').then((response) => response.data);
+
+export const createQuestion = async (questionData) => {
+  const response = await fetch('http://localhost:8080/api/questions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(questionData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create question');
+  }
+  return response.json();
+};
