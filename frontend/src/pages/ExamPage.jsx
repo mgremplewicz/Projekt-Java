@@ -56,6 +56,23 @@ function ExamPage() {
     return () => window.clearInterval(timerId);
   }, [exam, submitting, timeLeft]);
 
+  useEffect(() => {
+    if (loading || error || submitting) return;
+
+    window.history.pushState(null, null, window.location.pathname);
+
+    const handleBackButton = (e) => {
+      e.preventDefault();
+      setShowConfirmModal(true);
+      window.history.pushState(null, null, window.location.pathname);
+    };
+
+    window.addEventListener('popstate', handleBackButton);
+    return () => {
+      window.removeEventListener('popstate', handleBackButton);
+    };
+  }, [loading, error, submitting]);
+
   const questions = exam?.questionsList || [];
   const currentQuestion = questions[currentIdx];
 
@@ -168,7 +185,7 @@ function ExamPage() {
 
       <nav className="h-16 bg-white dark:bg-slate-900 border-b dark:border-slate-800 px-6 flex justify-between items-center sticky top-0 z-40 shadow-sm transition-colors">
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/dashboard')} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-gray-500 cursor-pointer transition-colors">
+          <button onClick={() => setShowConfirmModal(true)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-gray-500 cursor-pointer transition-colors">
             <ArrowLeft size={20} />
           </button>
           <div className="text-xl font-bold text-blue-600 dark:text-blue-400">Egzaminy Online</div>

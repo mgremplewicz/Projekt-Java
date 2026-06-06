@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, CheckCircle2, XCircle, AlertCircle, User, LayoutDashboard, ClipboardList } from 'lucide-react';
+import { LogOut, CheckCircle2, XCircle, AlertCircle, User, LayoutDashboard, ClipboardList, BookOpen } from 'lucide-react';
 import * as apiModule from '../api/client';
 
 function AdminResults() {
@@ -59,7 +59,6 @@ function AdminResults() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500">
       
-
       <nav className="h-16 bg-white dark:bg-slate-900 border-b dark:border-slate-800 px-6 flex justify-between items-center sticky top-0 z-40 shadow-sm">
         <div className="flex items-center gap-8">
           <div className="text-xl font-bold text-blue-600 dark:text-blue-400">Egzaminy Online</div>
@@ -70,6 +69,9 @@ function AdminResults() {
             >
               <LayoutDashboard size={16} />
               Kreator egzaminów
+            </button>
+            <button onClick={() => navigate('/admin/exams')} className="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors cursor-pointer">
+              <BookOpen size={16} /> Aktywne egzaminy
             </button>
             <button className="flex items-center gap-2 text-blue-600 font-bold border-b-2 border-blue-600 pb-1 cursor-pointer">
               <ClipboardList size={16} />

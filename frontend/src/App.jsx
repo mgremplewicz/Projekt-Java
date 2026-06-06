@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { Sun, Moon } from 'lucide-react';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
@@ -7,6 +7,29 @@ import Results from './pages/Results';
 import ExamPage from './pages/ExamPage';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminResults from './pages/AdminResults';
+import AdminExams from './pages/AdminExams';
+
+function GlobalStorageListener() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'authUser' && !e.newValue) {
+        localStorage.removeItem('authUser');
+        localStorage.removeItem('userLogin');
+        localStorage.removeItem('lastResult');
+        navigate('/', { replace: true });
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [navigate]);
+
+  return null;
+}
 
 function AdminRoute() {
   const authUser = JSON.parse(localStorage.getItem('authUser') || 'null');
@@ -53,6 +76,8 @@ function App() {
 
   return (
     <Router>
+      <GlobalStorageListener />
+
       <div className="fixed top-4 right-5 z-50 flex items-center">
         <button 
           onClick={() => setDarkMode(!darkMode)}
@@ -84,8 +109,8 @@ function App() {
         <Route element={<AdminRoute />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/results" element={<AdminResults />} />
+          <Route path="/admin/exams" element={<AdminExams />} />
         </Route>
-        
       </Routes>
     </Router>
   );

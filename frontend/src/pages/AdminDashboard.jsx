@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, CheckCircle, User, LayoutDashboard, ClipboardList, AlertCircle, Info, AlertTriangle, Check } from 'lucide-react';
+import { LogOut, CheckCircle, User, LayoutDashboard, ClipboardList, BookOpen, Info, AlertTriangle, Check } from 'lucide-react';
 import * as apiModule from '../api/client';
 
 function AdminDashboard() {
@@ -41,7 +41,6 @@ function AdminDashboard() {
         .catch((err) => {
           console.error("Błąd API:", err);
           setQuestionsError('Błąd połączenia z bazą. Załadowano podgląd demonstracyjny.');
-          
           setLoadingQuestions(false);
         });
     }
@@ -91,7 +90,6 @@ function AdminDashboard() {
 
     try {
       const savedQuestion = await apiModule.createQuestion(newQuestionData);
-      
       setQuestionBank(prev => [savedQuestion, ...prev]);
       setSelectedQuestions(prev => [...prev, savedQuestion.id]);
 
@@ -159,7 +157,10 @@ function AdminDashboard() {
           <div className="text-xl font-bold text-blue-600 dark:text-blue-400">Egzaminy Online</div>
           <div className="hidden md:flex items-center gap-4">
             <button className="flex items-center gap-2 text-blue-600 font-bold border-b-2 border-blue-600 pb-1 cursor-pointer">
-              <LayoutDashboard size={16} /> Kreator testów
+              <LayoutDashboard size={16} /> Kreator egzaminów
+            </button>
+            <button onClick={() => navigate('/admin/exams')} className="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors cursor-pointer">
+              <BookOpen size={16} /> Aktywne egzaminy
             </button>
             <button onClick={() => navigate('/admin/results')} className="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors cursor-pointer">
               <ClipboardList size={16} /> Wyniki uczniów
@@ -317,7 +318,7 @@ function AdminDashboard() {
               <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 text-orange-500 rounded-full flex items-center justify-center mb-6">
                 <AlertTriangle size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Opublikować egzamin?</h3>
+              <h3 className="text-2xl font-bold text-gray-800 dark:white mb-2">Opublikować egzamin?</h3>
               <p className="text-gray-500 dark:text-gray-400 mb-8">
                 Czy na pewno chcesz opublikować egzamin <span className="font-bold text-blue-600 dark:text-blue-400">"{title}"</span>?
               </p>
