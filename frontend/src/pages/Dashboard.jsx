@@ -8,8 +8,8 @@ function Dashboard() {
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [authUser] = useState(() => JSON.parse(localStorage.getItem('authUser') || 'null'));
-  const userLogin = authUser?.username || localStorage.getItem('userLogin') || 'Uczeń';
+  const [authUser] = useState(() => JSON.parse(sessionStorage.getItem('authUser') || 'null'));
+  const userLogin = authUser?.username || sessionStorage.getItem('userLogin') || 'Uczeń';
 
   useEffect(() => {
     if (!authUser) {
@@ -24,8 +24,8 @@ function Dashboard() {
   }, [authUser, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('authUser');
-    localStorage.removeItem('userLogin');
+    sessionStorage.removeItem('authUser');
+    sessionStorage.removeItem('userLogin');
     navigate('/');
   };
 

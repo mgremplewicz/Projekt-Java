@@ -9,8 +9,8 @@ function AdminResults() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const [authUser] = useState(() => JSON.parse(localStorage.getItem('authUser') || 'null'));
-  const userLogin = authUser?.username || localStorage.getItem('userLogin') || 'Administrator';
+  const [authUser] = useState(() => JSON.parse(sessionStorage.getItem('authUser') || 'null'));
+  const userLogin = authUser?.username || sessionStorage.getItem('userLogin') || 'Administrator';
 
   useEffect(() => {
     if (!authUser) {
@@ -40,8 +40,8 @@ function AdminResults() {
   }, [authUser, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('authUser');
-    localStorage.removeItem('userLogin');
+    sessionStorage.removeItem('authUser');
+    sessionStorage.removeItem('userLogin');
     navigate('/');
   };
 
@@ -58,7 +58,6 @@ function AdminResults() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500">
-      
       <nav className="h-16 bg-white dark:bg-slate-900 border-b dark:border-slate-800 px-6 flex justify-between items-center sticky top-0 z-40 shadow-sm">
         <div className="flex items-center gap-8">
           <div className="text-xl font-bold text-blue-600 dark:text-blue-400">Egzaminy Online</div>

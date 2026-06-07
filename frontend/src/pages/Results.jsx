@@ -5,11 +5,11 @@ import { getResults } from '../api/client';
 
 function Results() {
   const navigate = useNavigate();
-  const [authUser] = useState(() => JSON.parse(localStorage.getItem('authUser') || 'null'));
+  const [authUser] = useState(() => JSON.parse(sessionStorage.getItem('authUser') || 'null'));
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const userLogin = authUser?.username || localStorage.getItem('userLogin') || 'Uczeń';
+  const userLogin = authUser?.username || sessionStorage.getItem('userLogin') || 'Uczeń';
 
   useEffect(() => {
     if (!authUser) {
@@ -24,9 +24,9 @@ function Results() {
   }, [authUser, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('authUser');
-    localStorage.removeItem('userLogin');
-    localStorage.removeItem('lastResult');
+    sessionStorage.removeItem('authUser');
+    sessionStorage.removeItem('userLogin');
+    sessionStorage.removeItem('lastResult');
     navigate('/');
   };
 

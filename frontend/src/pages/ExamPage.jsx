@@ -16,8 +16,8 @@ import { getExam, submitExam } from '../api/client';
 function ExamPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [authUser] = useState(() => JSON.parse(localStorage.getItem('authUser') || 'null'));
-  const userLogin = authUser?.username || localStorage.getItem('userLogin') || 'Uczeń';
+  const [authUser] = useState(() => JSON.parse(sessionStorage.getItem('authUser') || 'null'));
+  const userLogin = authUser?.username || sessionStorage.getItem('userLogin') || 'Uczeń';
 
   const [exam, setExam] = useState(null);
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -83,8 +83,8 @@ function ExamPage() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('authUser');
-    localStorage.removeItem('userLogin');
+    sessionStorage.removeItem('authUser');
+    sessionStorage.removeItem('userLogin');
     navigate('/');
   };
 
@@ -113,7 +113,7 @@ function ExamPage() {
         userId: authUser.id,
         answers: selectedAnswers,
       });
-      localStorage.setItem('lastResult', JSON.stringify(result));
+      sessionStorage.setItem('lastResult', JSON.stringify(result));
       navigate('/results');
     } catch {
       setError('Nie udało się wysłać odpowiedzi. Spróbuj ponownie.');

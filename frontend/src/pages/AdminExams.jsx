@@ -13,8 +13,8 @@ function AdminExams() {
   
   const [questionBank, setQuestionBank] = useState([]);
 
-  const [authUser] = useState(() => JSON.parse(localStorage.getItem('authUser') || 'null'));
-  const userLogin = authUser?.username || localStorage.getItem('userLogin') || 'Administrator';
+  const [authUser] = useState(() => JSON.parse(sessionStorage.getItem('authUser') || 'null'));
+  const userLogin = authUser?.username || sessionStorage.getItem('userLogin') || 'Administrator';
 
   useEffect(() => {
     if (!authUser) {
@@ -44,8 +44,8 @@ function AdminExams() {
   }, [authUser, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('authUser');
-    localStorage.removeItem('userLogin');
+    sessionStorage.removeItem('authUser');
+    sessionStorage.removeItem('userLogin');
     navigate('/');
   };
 
@@ -66,7 +66,6 @@ function AdminExams() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500">
-      
       <nav className="h-16 bg-white dark:bg-slate-900 border-b dark:border-slate-800 px-6 flex justify-between items-center sticky top-0 z-40 shadow-sm">
         <div className="flex items-center gap-8">
           <div className="text-xl font-bold text-blue-600 dark:text-blue-400">Egzaminy Online</div>
@@ -143,7 +142,6 @@ function AdminExams() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <button className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setSelectedExamDetails(null)} />
           <div className="relative bg-white dark:bg-slate-800 w-full max-w-2xl p-6 rounded-xl shadow-2xl border dark:border-slate-700 max-h-[85vh] overflow-y-auto space-y-4 animate-in fade-in zoom-in-95 duration-200">
-            
             <div className="flex justify-between items-center border-b dark:border-slate-700 pb-3">
               <div>
                 <h3 className="text-xl font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">{selectedExamDetails.title}</h3>
