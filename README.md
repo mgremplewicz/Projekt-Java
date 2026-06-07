@@ -8,6 +8,10 @@
    docker compose up -d postgres
    ```
 
+   ```bash
+   Jeśli chcesz usunać zawartość bazy to: docker compose down -v
+   ```
+
 2. Uruchom backend:
 
    ```bash
@@ -28,6 +32,7 @@ Frontend dziala pod adresem `http://localhost:5173`
 
 - `4gremplewicz` / `12345`
 - `4bosak` / `12345`
+- `nauczyciel` / `nauczyciel123`
 
 ## Baza danych
 
@@ -37,7 +42,7 @@ Domyslna konfiguracja PostgreSQL:
 - uzytkownik: `egzaminy`
 - haslo: `egzaminy`
 
-Zeby wejsc do bazy w dockerze w Exec i wywsitelic tabele:
+Zeby przejsc do tabeli w dockerze to w konsoli containtera -- Exec , a potem wsywietlamy tabele:
 
    ```bash
    /usr/bin/psql -h localhost -U egzaminy -d system_egzaminacyjny
