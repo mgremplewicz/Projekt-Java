@@ -94,7 +94,7 @@ public class DataInitializer implements CommandLineRunner
 
         Exam exam = new Exam();
         exam.setTitle("Egzamin z matematyki");
-        exam.setDurationMinutes(30);
+        exam.setDurationMinutes(10);
         exam.setQuestionsList(questions);
         examRepository.save(exam);
 
@@ -164,7 +164,7 @@ public class DataInitializer implements CommandLineRunner
 
         Exam exam2 = new Exam();
         exam2.setTitle("Egzamin z dodawania");
-        exam2.setDurationMinutes(45);
+        exam2.setDurationMinutes(5);
         exam2.setQuestionsList(questions2);
         examRepository.save(exam2);
 
@@ -263,7 +263,7 @@ public class DataInitializer implements CommandLineRunner
 
         Exam exam3 = new Exam();
         exam3.setTitle("Egzamin z odejmowania");
-        exam3.setDurationMinutes(30);
+        exam3.setDurationMinutes(5);
         exam3.setQuestionsList(questions3);
         examRepository.save(exam3);
 
@@ -311,7 +311,7 @@ public class DataInitializer implements CommandLineRunner
                         1
                 ),
                 createQuestion(
-                        "Jak nazywa się największa pustynia gorąca na świecie?",
+                        "Jak nazywa się największa pustynia na świecie?",
                         List.of("Gobi", "Sahara", "Kalahari", "Atakama"),
                         "Sahara",
                         1
@@ -344,7 +344,7 @@ public class DataInitializer implements CommandLineRunner
 
         Exam exam4 = new Exam();
         exam4.setTitle("Egzamin z geografii");
-        exam4.setDurationMinutes(35);
+        exam4.setDurationMinutes(10);
         exam4.setQuestionsList(questions4);
         examRepository.save(exam4);
     }
