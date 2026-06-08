@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ChevronLeft,
@@ -28,6 +28,8 @@ function ExamPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const submittedRef = useRef(false);
+  const autoSubmitAttemptedRef = useRef(false);
 
   useEffect(() => {
     if (!authUser) {
@@ -84,10 +86,12 @@ function ExamPage() {
     setSelectedAnswers({ ...selectedAnswers, [currentQuestion.id]: option });
   };
 
-  const handleSubmit = async () => {
-    if (!authUser || submitting) {
+  const handleSubmit = useCallback(async () => {
+    if (!authUser || submitting || submittedRef.current) {
       return;
     }
+
+    submittedRef.current = true;
 
     try {
       setSubmitting(true);
@@ -99,12 +103,22 @@ function ExamPage() {
       localStorage.setItem('lastResult', JSON.stringify(result));
       navigate('/results');
     } catch {
+      submittedRef.current = false;
       setError('Nie udało się wysłać odpowiedzi. Spróbuj ponownie.');
       setShowConfirmModal(false);
     } finally {
       setSubmitting(false);
     }
-  };
+  }, [authUser, id, navigate, selectedAnswers, submitting]);
+
+  useEffect(() => {
+    if (!exam || timeLeft !== 0 || autoSubmitAttemptedRef.current) {
+      return;
+    }
+
+    autoSubmitAttemptedRef.current = true;
+    handleSubmit();
+  }, [exam, handleSubmit, timeLeft]);
 
   if (loading) {
     return (
