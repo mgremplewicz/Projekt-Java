@@ -7,9 +7,10 @@
    ```bash
    docker compose up -d postgres
    ```
+   Jeśli chcesz usunać zawartość bazy to:
 
    ```bash
-   Jeśli chcesz usunać zawartość bazy to: docker compose down -v
+   docker compose down -v
    ```
 
 2. Uruchom backend:
