@@ -1,0 +1,23 @@
+Wymagania do uruchomienia projektu
+
+1. Java JDK 17
+   - backend wymaga Java 17
+   - możesz użyć OpenJDK 17 lub innego zgodnego JDK
+
+2. Docker + Docker Compose
+   - używany kontener PostgreSQL: postgres:16
+   - na Windows najlepiej Docker Desktop, który zawiera docker compose
+
+3. Node.js + npm
+   - frontend używa pakietów z frontend/package.json
+   - zalecana wersja Node.js: 18+ (LTS)
+
+Używane wersje bibliotek i narzędzi:
+- Spring Boot 4.0.6
+- PostgreSQL 16
+- React 19.2.5
+- react-router-dom 7.15.0
+- Axios 1.16.0
+- Vite 8.0.10
+- Tailwind CSS 4.2.4
+

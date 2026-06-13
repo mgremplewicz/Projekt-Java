@@ -1,16 +1,34 @@
 # System Egzaminacyjny
 
+## Wymagania do uruchomienia projektu
+
+1. Java JDK 17
+   - backend wymaga Java 17
+
+
+2. Docker + Docker Compose
+   - używany kontener PostgreSQL: postgres:16
+   - na Windows najlepiej Docker Desktop, który zawiera docker compose
+
+
+3. Node.js + npm
+   - zalecana wersja Node.js: 18+
+
+Używane wersje bibliotek i narzędzi:
+- Spring Boot 4.0.6
+- PostgreSQL 16
+- React 19.2.5
+- react-router-dom 7.15.0
+- Axios 1.16.0
+- Vite 8.0.10
+- Tailwind CSS 4.2.4
+
 ## Uruchomienie
 
 1. Uruchom PostgreSQL:
 
    ```bash
    docker compose up -d postgres
-   ```
-   Jeśli chcesz usunać zawartość bazy to:
-
-   ```bash
-   docker compose down -v
    ```
 
 2. Uruchom backend:
@@ -43,12 +61,10 @@ Domyslna konfiguracja PostgreSQL:
 - uzytkownik: `egzaminy`
 - haslo: `egzaminy`
 
-Zeby przejsc do tabeli w dockerze to w konsoli containtera -- Exec , a potem wsywietlamy tabele:
+
+
+  Jeśli chcesz usunać zawartość bazy to:
 
    ```bash
-   /usr/bin/psql -h localhost -U egzaminy -d system_egzaminacyjny
-   \dt -- pokazuje liste tabeli
-   SELECT * FROM (tutaj nazwa tabeli)
+   docker compose down -v
    ```
-
-Po starcie backend tworzy podstawowe dane: dwoch uzytkownikow, pytania oraz egzamin probny.
