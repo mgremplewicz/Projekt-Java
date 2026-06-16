@@ -344,7 +344,7 @@ public class DataInitializer implements CommandLineRunner
 
         Exam exam4 = new Exam();
         exam4.setTitle("Egzamin z geografii");
-        exam4.setDurationMinutes(10);
+        exam4.setDurationMinutes(1);
         exam4.setQuestionsList(questions4);
         examRepository.save(exam4);
     }
